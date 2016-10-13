@@ -14,14 +14,17 @@ public class ProcessTable {
         File input = new File(args[0]); //reads input from terminal
         ArrayList<ProcessInfo> P_Container = new ArrayList<>();
         int num_Proc = file_Load(input ,P_Container); // Process data into Arraylist of objects
-        int num_Cycles;
+        int current_Counter=0;
         //System.out.println("HELLO" + P_Container.get(1).get_ID());
-        boolean flag = false;
+        //------------------UNCOMMENT TO TEST PROGRAM-----------------------------------
+        /*boolean flag = false;
         do{
             for(int i = 0; i < num_Proc ; i++){
-
+                P_Container.get(i).run(current_Counter);
+                P_Container.get(i).check_Status(current_Counter);
             }
-        }while(!flag);
+            current_Counter+=100;
+        }while(!flag);*/
     }
 
     public static int file_Load(File file, ArrayList pc) {
@@ -58,17 +61,5 @@ public class ProcessTable {
         while(count!=3) {
             System.out.println("TESTING:" + pc.get(count++));
         }*/
-    }
-
-    public static int process_TNum_Cycles(ArrayList<ProcessInfo> pc) {
-        int large = pc.get(0).getNum_Cycles();
-        for (int i = 0; i < pc.size(); i++){
-
-        }
-
-    }
-
-    public static void process_ID(ArrayList pc) {
-
     }
 }
