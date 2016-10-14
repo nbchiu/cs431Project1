@@ -15,16 +15,27 @@ public class ProcessTable {
         ArrayList<ProcessInfo> P_Container = new ArrayList<>();
         int num_Proc = file_Load(input ,P_Container); // Process data into Arraylist of objects
         int current_Counter=0;
+        int e = 0;
+        boolean[] end = new boolean[num_Proc];
         //System.out.println("HELLO" + P_Container.get(1).get_ID());
         //------------------UNCOMMENT TO TEST PROGRAM-----------------------------------
-        /*boolean flag = false;
+        boolean flag = false;
         do{
             for(int i = 0; i < num_Proc ; i++){
                 P_Container.get(i).run(current_Counter);
-                P_Container.get(i).check_Status(current_Counter);
+            }
+            for(int i = 0 ; i< num_Proc ; i++) {
+                e+=P_Container.get(i).check_Status(current_Counter);
+                    //end[e] = true;
+                    //e++;
+                    //System.out.println("E " + e);
+
             }
             current_Counter+=100;
-        }while(!flag);*/
+            if(e==(num_Proc)){
+                flag = true;
+            }
+        }while(!flag);
     }
 
     public static int file_Load(File file, ArrayList pc) {
@@ -56,7 +67,7 @@ public class ProcessTable {
     }
 
     public static void process_File(ProcessInfo pc){
-        System.out.println("TESTING: " + pc.get_ID()+ pc.get_COUNTER());
+        //System.out.println("TESTING: " + pc.get_ID()+ pc.get_COUNTER());
         /*int count = 0;
         while(count!=3) {
             System.out.println("TESTING:" + pc.get(count++));

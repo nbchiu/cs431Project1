@@ -9,34 +9,38 @@ public class ProcessInfo {
     private int num_Cycles;
     private int current;
     private boolean status;
-    private ArrayList<Integer> indx;
+    private ArrayList<Integer> indx;  // Blocked cycles
     private HashMap<Integer,Integer> blocked;
 
     ProcessInfo(Queue<Integer> info) {
         current =0;
         status = false;
         pid = info.poll();
-        System.out.println("CHECK:" + pid);
+        //System.out.println("CHECK:" + pid);
         pc = info.poll();
-        System.out.println("CHECK:" + pc);
+        //System.out.println("CHECK:" + pc);
         num_Cycles = info.poll();
-        System.out.println("CHECK:" + num_Cycles);
+        //System.out.println("CHECK:" + num_Cycles);
+        indx = new ArrayList<>();
+        blocked = new HashMap<>();
         while(!info.isEmpty()) {
-            System.out.println("check" + info.peek());
-            int cur = 0;
+            //System.out.println("check(indx)" + info.peek());
+            int cur=0;
             indx.add(info.poll());
-            System.out.println("CHECK" + indx.get(0));
-            blocked = new HashMap();
-            if (info.peek()!=null) {
-                blocked.put(indx.get(cur), info.poll());
-                cur++;
+            if (!info.isEmpty()) {
+                //System.out.println(current);
+                //System.out.println(info.peek());
+                blocked.put(indx.get(current), info.poll());
+                current++;
             }
         }
 
-        if(!blocked.isEmpty()){
+        /*if(!blocked.isEmpty()){
             System.out.println("TESTING HASH: " + blocked.get(indx.get(0)) );
+            System.out.println(indx.get(0));
             System.out.println("TESTING HASH: " + blocked.get(indx.get(1)) );
-        }
+            System.out.println(indx.get(1));
+        }*/
     }
 
     public int get_ID(){
@@ -63,22 +67,46 @@ public class ProcessInfo {
         if(blocked.isEmpty()){
             return false;
         }
-        int temp = blocked.get(cur)-100;
-
-        if(!(blocked.isEmpty()) &&  blocked.get(cur)>0){
-            blocked.put(cur,temp);
-            return true;
+        //System.out.println(pc);
+        //int temp = blocked.get(pc)-100;
+        if(!(blocked.isEmpty()) && blocked.get(pc)!=null) {
+            //System.out.println("pc" + pc);
+            if(blocked.get(pc)>0){
+                //blocked.put(pc,temp);
+                return true;
+            }
         }
-        else
             return false;
     }
 
-    public boolean check_Status(int cur) {
+    public int check_Status(int cur) {
         if(!status) {
-            if (is_Blocked(cur)) {
-                int temp = blocked.get(cur) - 100;
-                System.out.println(pid + " BLOCKED" + blocked.get(cur) + " - >" + temp);
-                blocked.put(cur, temp);
+            //System.out.println("pc" + pc);
+            if (is_Blocked(pc)) {
+                int temp = blocked.get(pc) - 100;
+                System.out.println(pid + " BLOCKED " + blocked.get(pc) + " - > " + temp);
+                blocked.put(pc, temp);
+                if (temp == 0) {
+                    System.out.println(pid + " READY");
+                }
+            }
+            if (num_Cycles == 0) {
+                System.out.println(pid + " DONE");
+                status = true;//done
+                return 1;
+            }
+            return 0;
+        }
+        return 0;
+    }
+
+    /*public boolean check_Status(int cur) {
+        if(!status) {
+            //System.out.println("pc" + pc);
+            if (is_Blocked(pc)) {
+                int temp = blocked.get(pc) - 100;
+                System.out.println(pid + " BLOCKED " + blocked.get(pc) + " - > " + temp);
+                blocked.put(pc, temp);
                 if (temp == 0) {
                     System.out.println(pid + " READY");
                 }
@@ -90,19 +118,29 @@ public class ProcessInfo {
             }
             return true;
         }
-        return false;
-    }
+        else {
+            return false;
+        }
+    }*/
 
     public void run(int cur){
         if(!status) {
-            if (!(is_Blocked(cur))) {
-                System.out.println(pid + "RUNNING");
-                System.out.println("pc " + cur + " -> " + (cur + 100));
-                System.out.println(pid + "READY");
-                num_Cycles -= 100;
+            if (!(is_Blocked(pc))) {
+                System.out.println(pid + " RUNNING");
+                if(!((num_Cycles-100)<0)) {
+                    System.out.println("pc " + pc + " -> " + (pc + 100));
+                    num_Cycles -=100;
+                }
+                else{
+                    System.out.println("pc " + pc + " -> " + (pc + num_Cycles));
+                    num_Cycles = 0;
+                }
+                System.out.println(pid + " READY");
+                pc = pc + 100;
+                //System.out.println(pc);
             } else {
                 System.out.println(pid + " RUNNING");
-                System.out.println("pc" + cur + " -> " + cur);
+                System.out.println("pc " + pc + " -> " + pc);
                 System.out.println(pid + " BLOCKED");
             }
         }
